@@ -4,12 +4,15 @@ import java.io.*;
 import java.util.*;
 
 public class FrequencyDictionary {
+    private static StringBuilder sb;
+
     public static void main(String[] args) {
-        String path = "c:\\Users\\VostrovSO\\Downloads\\j120\\test.txt";
+//        String path = "c:\\Users\\VostrovSO\\Downloads\\j120\\test.txt";
+        String path = "folder1/j120-lab2.txt";
 
         File file = new File(path);
+        sb = new StringBuilder();
         if (file.exists() && file.canRead()) {
-            StringBuilder sb = new StringBuilder();
             try (FileReader reader = new FileReader(file)) {
                 char[] buff = new char[1024];
                 int size;
@@ -19,13 +22,14 @@ public class FrequencyDictionary {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println(sb);
+//            System.out.println(sb);
         }
 
-        File dir = new File("c:\\Users\\VostrovSo\\Downloads\\j120\\myfiles");
+        File dir = new File("folder2");
         dir.mkdirs();
-        File newFile = new File(dir, "myfile1.txt");
-        String text = "Hello world!";
+        File newFile = new File(dir, "file2.txt");
+//        String text = "I write this text.";
+        String text = sb.toString();
         if (dir.canWrite()) {
             try {
                 newFile.createNewFile();
@@ -37,7 +41,7 @@ public class FrequencyDictionary {
             }
         }
 
-        example();
+//        example();
     }
 
     public static void example() {
@@ -72,5 +76,23 @@ public class FrequencyDictionary {
         list.add(3);
         list.add(17);
         list.add(6);
+    }
+
+    public static void reportByAlph(String text) {
+        File dir = new File("folder2");
+        dir.mkdirs();
+        File newFile = new File(dir, "file2.txt");
+//        String text = "I write this text.";
+        String text = sb.toString();
+        if (dir.canWrite()) {
+            try {
+                newFile.createNewFile();
+                FileWriter writer = new FileWriter(newFile);
+                writer.write(text);
+                writer.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
