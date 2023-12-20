@@ -1,17 +1,20 @@
 package frequencyDictionary;
 
+import jdk.jfr.Frequency;
+
 import java.io.*;
 import java.util.*;
 
 public class FrequencyDictionary {
-    private static StringBuilder sb;
 
-    public static void main(String[] args) {
-//        String path = "c:\\Users\\VostrovSO\\Downloads\\j120\\test.txt";
+    private String text;
+
+    public void Reader() {
+
+        StringBuilder sb = new StringBuilder();
         String path = "folder1/j120-lab2.txt";
-
         File file = new File(path);
-        sb = new StringBuilder();
+
         if (file.exists() && file.canRead()) {
             try (FileReader reader = new FileReader(file)) {
                 char[] buff = new char[1024];
@@ -22,14 +25,18 @@ public class FrequencyDictionary {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-//            System.out.println(sb);
         }
+        text = sb.toString();
+    }
+
+    public void Writer() {
 
         File dir = new File("folder2");
         dir.mkdirs();
         File newFile = new File(dir, "file2.txt");
 //        String text = "I write this text.";
-        String text = sb.toString();
+//        String text = FrequencyDictionary.Reader();
+
         if (dir.canWrite()) {
             try {
                 newFile.createNewFile();
@@ -40,8 +47,40 @@ public class FrequencyDictionary {
                 e.printStackTrace();
             }
         }
-
 //        example();
+    }
+
+    public void reportByAlph() {
+
+        File dir = new File("reports");
+        dir.mkdirs();
+        File newFile = new File(dir, "report-by-alph.txt");
+//        String text = "I write this text.";
+
+        if (text != null) {
+            String[] stringArr = text.toLowerCase().split("[ ,.!?'\"-:;<>/\\[\\]{}]");
+            System.out.println(Arrays.toString(stringArr));
+//            System.out.println(stringArr[0]);
+
+            if (dir.canWrite()) {
+                try {
+                    newFile.createNewFile();
+                    FileWriter writer = new FileWriter(newFile);
+                    for (String s : stringArr) {
+                        if (!s.isEmpty() && !s.equals("-")) {
+                            writer.write(s + '\n');
+                        }
+                    }
+                    writer.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void print() {
+        System.out.println(text);
     }
 
     public static void example() {
@@ -76,23 +115,5 @@ public class FrequencyDictionary {
         list.add(3);
         list.add(17);
         list.add(6);
-    }
-
-    public static void reportByAlph(String text) {
-        File dir = new File("folder2");
-        dir.mkdirs();
-        File newFile = new File(dir, "file2.txt");
-//        String text = "I write this text.";
-        String text = sb.toString();
-        if (dir.canWrite()) {
-            try {
-                newFile.createNewFile();
-                FileWriter writer = new FileWriter(newFile);
-                writer.write(text);
-                writer.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }
