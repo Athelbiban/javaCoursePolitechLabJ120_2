@@ -58,8 +58,9 @@ public class FrequencyDictionary {
 //        String text = "I write this text.";
 
         if (text != null) {
-            String[] stringArr = text.toLowerCase().split("[ ,.!?'\"-:;<>/\\[\\]{}]");
-            System.out.println(Arrays.toString(stringArr));
+            String reg = "[\\s,.!?'\":;<>/\\[\\]{}«»—\n()…*]";
+            String[] stringArr = text.toLowerCase().split(reg);
+//            System.out.println(Arrays.toString(stringArr));
 //            System.out.println(stringArr[0]);
 
             if (dir.canWrite()) {
