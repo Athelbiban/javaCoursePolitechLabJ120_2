@@ -2,9 +2,7 @@ package frequencyDictionary;
 
 public class Main {
     public static void main(String[] args) {
-        FrequencyDictionary fr = new FrequencyDictionary();
-        fr.Reader();
-//        fr.print();
-        fr.reportByAlph();
+        String[] stringArr = FrequencyDictionary.Reader("folder1/j120-lab2.txt");
+        FrequencyDictionary.getReportByAlph(stringArr);
     }
 }
