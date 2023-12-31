@@ -132,6 +132,7 @@ public class FrequencyDictionary {
         writer(stringList, REPORTBYFREQ);
     }
 
+    // *реализуйте метод, возвращающий словарь найденных слов без возможности изменения словаря
     public static Map<String, Integer> getDictionary() {
         return dictionary.isEmpty() ? null : new LinkedHashMap<>(dictionary);
     }
