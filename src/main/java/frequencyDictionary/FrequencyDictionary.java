@@ -12,19 +12,22 @@ public class FrequencyDictionary {
     private final static String REPORTBYALPH = "report-by-alph.txt";
     private final static String REPORTBYALPHREV = "report-by-alph-rev.txt";
     private final static String REPORTBYFREQ = "report-by-freq.txt";
+    private static Map<String, Integer> dictionary = new LinkedHashMap<>();
 
     public static void main(String[] args) {
 
-        Map<String, Integer> stringMap = FrequencyDictionary.reader();
-        List<Map.Entry<String, Integer>> entryList = FrequencyDictionary.getReportByAlph(stringMap);
+        FrequencyDictionary.reader();
+        List<Map.Entry<String, Integer>> entryList = FrequencyDictionary.getReportByAlph();
         FrequencyDictionary.getReportByFreq(entryList);
-        FrequencyDictionary.getReportByAlphRev(stringMap);
+        FrequencyDictionary.getReportByAlphRev();
+        Map<String, Integer> map = FrequencyDictionary.getDictionary();
+//        System.out.println(map);
 
-        System.out.println("Отчёты созданы в директории 'reports'");
+        System.out.println("Отчёты созданы в директории 'reports/'");
 
     }
 
-    private static Map<String, Integer> reader() {
+    private static void reader() {
 
         StringBuilder sb = new StringBuilder();
         String path = "files/j120-lab2.txt";
@@ -42,7 +45,7 @@ public class FrequencyDictionary {
                 }
 
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.printf("%s: Ошибка чтения файла", e);
             }
 
             String[] arr = sb.toString().toLowerCase().split(reg);
@@ -54,7 +57,7 @@ public class FrequencyDictionary {
             }
         }
 
-        return hashMap;
+        dictionary = hashMap;
     }
 
     private static void writer(List<String> list, String fileName) {
@@ -74,15 +77,15 @@ public class FrequencyDictionary {
                 writer.flush();
 
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.printf("%s: Ошибка создания или записи файла", e);
             }
         }
     }
 
-    private static List<Map.Entry<String, Integer>> getReportByAlph(Map<String, Integer> map) {
+    private static List<Map.Entry<String, Integer>> getReportByAlph() {
 
         List<String> stringList = new LinkedList<>();
-        List<Map.Entry<String, Integer>> entryList = new ArrayList<>(map.entrySet());
+        List<Map.Entry<String, Integer>> entryList = new ArrayList<>(dictionary.entrySet());
         entryList.sort(Map.Entry.comparingByKey());
 
         for (Map.Entry<String, Integer> e: entryList) {
@@ -93,12 +96,12 @@ public class FrequencyDictionary {
         return entryList;
     }
 
-    private static void getReportByAlphRev(Map<String, Integer> map) {
+    private static void getReportByAlphRev() {
 
         List<String> reversedStringList = new LinkedList<>();
         List<String> resultList = new LinkedList<>();
 
-        for (Map.Entry<String, Integer> e : map.entrySet()) {
+        for (Map.Entry<String, Integer> e : dictionary.entrySet()) {
             StringBuilder sb = new StringBuilder(e.getKey()).reverse();
             reversedStringList.add(sb.toString());
         }
@@ -129,4 +132,7 @@ public class FrequencyDictionary {
         writer(stringList, REPORTBYFREQ);
     }
 
+    public static Map<String, Integer> getDictionary() {
+        return dictionary.isEmpty() ? null : new LinkedHashMap<>(dictionary);
+    }
 }
