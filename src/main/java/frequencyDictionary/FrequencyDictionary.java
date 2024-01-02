@@ -101,14 +101,13 @@ public class FrequencyDictionary {
         List<String> reversedStringList = new LinkedList<>();
         List<String> resultList = new LinkedList<>();
 
-        for (Map.Entry<String, Integer> e : dictionary.entrySet()) {
-            StringBuilder sb = new StringBuilder(e.getKey()).reverse();
+        for (String s : dictionary.keySet()) {
+            StringBuilder sb = new StringBuilder(s).reverse();
             reversedStringList.add(sb.toString());
         }
 
         Collections.sort(reversedStringList);
 
-        // здесь кажется, что можно сделать проще, избавившись от этого цикла, но не пойму как
         for (String s : reversedStringList) {
             StringBuilder sb = new StringBuilder(s).reverse();
             resultList.add(sb.toString());
