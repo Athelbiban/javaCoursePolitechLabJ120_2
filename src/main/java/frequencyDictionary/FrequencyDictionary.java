@@ -5,13 +5,16 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class FrequencyDictionary {
 
+    private final static String FILEPATH = "files/j120-lab2.txt";
     private final static String DIRPATH = "reports";
     private final static String REPORTBYALPH = "report-by-alph.txt";
     private final static String REPORTBYALPHREV = "report-by-alph-rev.txt";
     private final static String REPORTBYFREQ = "report-by-freq.txt";
+    private final static Pattern PATTERN = Pattern.compile("[\\s\\d,.!?'\":;<>/\\[\\]{}«»—\n()…*]");
     private static Map<String, Integer> dictionary = new LinkedHashMap<>();
 
     public static void main(String[] args) {
@@ -30,9 +33,7 @@ public class FrequencyDictionary {
     private static void reader() {
 
         StringBuilder sb = new StringBuilder();
-        String path = "files/j120-lab2.txt";
-        File file = new File(path);
-        String reg = "[\\s\\d,.!?'\":;<>/\\[\\]{}«»—\n()…*]";
+        File file = new File(FILEPATH);
         Map<String, Integer> hashMap = new LinkedHashMap<>();
 
         if (file.exists() && file.canRead()) {
@@ -48,9 +49,9 @@ public class FrequencyDictionary {
                 System.out.printf("%s: Ошибка чтения файла", e);
             }
 
-            String[] arr = sb.toString().toLowerCase().split(reg);
+            String[] stringArr = PATTERN.split(sb.toString().toLowerCase());
 
-            for (String s : arr) {
+            for (String s : stringArr) {
                 if (!s.isEmpty() && !s.equals("-")) {
                     hashMap.merge(s, 1, Integer::sum);
                 }
