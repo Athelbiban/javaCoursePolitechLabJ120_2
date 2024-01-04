@@ -14,9 +14,8 @@ public class MyInterpreter {
     private static final Pattern PATTERN_COMMENT = Pattern.compile("^#");
     private static final Pattern PATTERN_PRINT = Pattern.compile("^print\\s+");
     private static final Pattern PATTERN_SET = Pattern.compile("^set\\s+");
-    private static final Pattern PATTERN_SET1 = Pattern.compile("^\\$(\\w+)\\s*=\\s*(-?\\d+)");
-    private static final Pattern PATTERN_SET2 = Pattern.compile("^\\$(\\w+)\\s*=\\s*(\\$\\w+\\s*.\\s*\\$\\w+)");
-    private static final Pattern PATTERN_SET3 = Pattern.compile("\\s*.\\s*\\$?\\w+");
+    private static final Pattern PATTERN_SET1 = Pattern.compile("^\\$(\\w+)\\s*=\\s*(\\$?-?\\w+)");
+    private static final Pattern PATTERN_SET2 = Pattern.compile("\\s*.\\s*\\$?\\w+");
     private static final Pattern PATTERN_CALC = Pattern.compile("^\\$?(\\w+)");
     private static final Pattern PATTERN_CALC1 = Pattern.compile("\\$?(\\w+)$");
     private static final Pattern PATTERN_CALC2 = Pattern.compile("[+-]");
@@ -70,19 +69,25 @@ public class MyInterpreter {
     private static void set(String str) {
 
         Matcher setMatcher1 = PATTERN_SET1.matcher(str);
-        Matcher setMatcher2 = PATTERN_SET2.matcher(str);
 
         if (setMatcher1.find()) {
-            VARIABLES.put(setMatcher1.group(1), Integer.parseInt(setMatcher1.group(2)));
-        }
 
-        if (setMatcher2.find()) {
-            VARIABLES.put(setMatcher2.group(1), calculate(setMatcher2.group(2)));
-            Matcher setMatcher3 = PATTERN_SET3.matcher(str.substring(setMatcher2.end()));
+            if (setMatcher1.group(2).charAt(0) == '$') {
+                VARIABLES.put(setMatcher1.group(1), getValue(setMatcher1.group(2).substring(1)));
+            }
+            else {
+                VARIABLES.put(setMatcher1.group(1), Integer.parseInt(setMatcher1.group(2)));
+            }
+
+            Matcher setMatcher3 = PATTERN_SET2.matcher(str.substring(setMatcher1.end()));
 
             while (setMatcher3.find()) {
-                VARIABLES.put(setMatcher2.group(1), calculate(setMatcher2.group(1) + setMatcher3.group()));
+                VARIABLES.put(setMatcher1.group(1), calculate(setMatcher1.group(1) + setMatcher3.group()));
             }
+
+        }
+        else {
+            throw new IllegalArgumentException("Неизвестная ошибка в строке " + LINE_COUNTER);
         }
 
     }
@@ -134,8 +139,8 @@ public class MyInterpreter {
             }
             else {
                 return a - b;
-
             }
+
         }
         else {
             throw new IllegalArgumentException("Неизвестный математический оператор в строке " + LINE_COUNTER);
