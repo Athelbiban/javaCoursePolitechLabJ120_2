@@ -10,9 +10,12 @@ import java.util.regex.Pattern;
 
 public class MyInterpreter {
 
-    private final static String FILEPATH = "files/script_test.txt";
+    private final static String FILEPATH = "files/script.txt";
     private static final Pattern PATTERN_COMMENT = Pattern.compile("^#");
     private static final Pattern PATTERN_PRINT = Pattern.compile("^print\\s+");
+    private static final Pattern PATTERN_PRINT1 = Pattern.compile("^\"(.*?)\"");
+    private static final Pattern PATTERN_PRINT2 = Pattern.compile("^\\$(\\w+)");
+    private static final Pattern PATTERN_PRINT3 = Pattern.compile("^,\\s*(.+)");
     private static final Pattern PATTERN_SET = Pattern.compile("^set\\s+");
     private static final Pattern PATTERN_SET1 = Pattern.compile("^\\$(\\w+)\\s*=\\s*(\\$?-?\\w+)");
     private static final Pattern PATTERN_SET2 = Pattern.compile("\\s*.\\s*\\$?\\w+");
@@ -23,7 +26,11 @@ public class MyInterpreter {
     private static final Map<String, Integer> VARIABLES = new LinkedHashMap<>();
     private static int LINE_COUNTER = 0;
 
-    public static void read() {
+    public static void main(String[] args) {
+        read();
+    }
+
+    private static void read() {
 
         File file = new File(FILEPATH);
 
@@ -39,31 +46,21 @@ public class MyInterpreter {
         }
     }
 
-    public static void execute(String str) {
+    private static void execute(String str) {
 
         LINE_COUNTER++;
         Matcher matcherSet = PATTERN_SET.matcher(str);
         Matcher matcherPrint = PATTERN_PRINT.matcher(str);
         Matcher matcherComment = PATTERN_COMMENT.matcher(str);
 
-        if (matcherSet.find()) {
-            set(str.substring(matcherSet.end()));
-        }
+        if (matcherSet.find()) { set(str.substring(matcherSet.end())); }
 
-        else if (matcherPrint.find()) {
-//            System.out.println(str.substring(matcherPrint.end()));
-            System.out.println("Отработал print");
-        }
+        else if (matcherPrint.find()) { print(str.substring(matcherPrint.end())); }
 
-        else if (str.isEmpty() || matcherComment.find()) {
-            System.out.println("Коммент или пустая строка");
-        }
+        else if (str.isEmpty() || matcherComment.find()) { }
 
-        else {
-            throw new IllegalArgumentException("Неизвестная ошибка в строке " + LINE_COUNTER);
-        }
+        else { throw new IllegalArgumentException("Неизвестная ошибка в строке " + LINE_COUNTER); }
 
-        System.out.println(VARIABLES);
     }
 
     private static void set(String str) {
@@ -92,7 +89,26 @@ public class MyInterpreter {
 
     }
 
-    private static void print() {
+    private static void print(String str) {
+
+        Matcher printMatcher1 = PATTERN_PRINT1.matcher(str);
+        Matcher printMatcher2 = PATTERN_PRINT2.matcher(str);
+        Matcher printMatcher3;
+
+        if (printMatcher1.find()) {
+            System.out.print(printMatcher1.group(1));
+            printMatcher3 = PATTERN_PRINT3.matcher(str.substring(printMatcher1.end()));
+        }
+        else if (printMatcher2.find()) {
+            System.out.print(getValue(printMatcher2.group().substring(1)));
+            printMatcher3 = PATTERN_PRINT3.matcher(str.substring(printMatcher2.end()));
+        }
+        else {
+            throw new IllegalArgumentException("Неизвестная ошибка в строке " + LINE_COUNTER);
+        }
+
+        if (printMatcher3.find()) { print(printMatcher3.group(1)); }
+        else { System.out.println(); }
 
     }
 
