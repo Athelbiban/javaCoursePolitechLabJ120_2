@@ -27,7 +27,9 @@ public class MyInterpreter {
     private static int LINE_COUNTER = 0;
 
     public static void main(String[] args) {
+
         read();
+
     }
 
     private static void read() {
@@ -35,15 +37,19 @@ public class MyInterpreter {
         File file = new File(FILEPATH);
 
         if (file.exists() && file.canRead()) {
+
             try (Scanner sc = new Scanner(file)) {
+
                 while (sc.hasNextLine()) {
                     String s = sc.nextLine();
                     execute(s);
                 }
+
             }catch (IOException e) {
                 System.out.printf("%s: Ошибка чтения файла", e);
             }
         }
+
     }
 
     private static void execute(String str) {
@@ -54,12 +60,12 @@ public class MyInterpreter {
         Matcher matcherComment = PATTERN_COMMENT.matcher(str);
 
         if (matcherSet.find()) { set(str.substring(matcherSet.end())); }
-
         else if (matcherPrint.find()) { print(str.substring(matcherPrint.end())); }
-
-        else if (str.isEmpty() || matcherComment.find()) { }
-
-        else { throw new IllegalArgumentException("Неизвестная ошибка в строке " + LINE_COUNTER); }
+        else {
+            if (!str.isEmpty() && !matcherComment.find()) {
+                throw new IllegalArgumentException("Неизвестная ошибка в строке " + LINE_COUNTER);
+            }
+        }
 
     }
 
