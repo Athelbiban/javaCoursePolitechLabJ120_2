@@ -26,28 +26,18 @@ public class MyInterpreter {
     private static final Map<String, Integer> VARIABLES = new LinkedHashMap<>();
     private static int LINE_COUNTER = 0;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { run(); }
 
-        read();
-
-    }
-
-    private static void read() {
+    private static void run() {
 
         File file = new File(FILEPATH);
 
         if (file.exists() && file.canRead()) {
-
             try (Scanner sc = new Scanner(file)) {
 
-                while (sc.hasNextLine()) {
-                    String s = sc.nextLine();
-                    execute(s);
-                }
+                while (sc.hasNextLine()) { execute(sc.nextLine()); }
 
-            }catch (IOException e) {
-                System.out.printf("%s: Ошибка чтения файла", e);
-            }
+            }catch (IOException e) { System.out.printf("%s: Ошибка чтения файла", e); }
         }
 
     }
